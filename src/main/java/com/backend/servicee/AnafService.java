@@ -3,7 +3,10 @@ package com.backend.servicee;
 import com.backend.model.Financial_Data;
 import com.backend.model.request.AnafRequest;
 import com.backend.model.response.AnafResponse;
+import com.backend.repository.FinancialDataRepository;
 import com.google.gson.Gson;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,11 +17,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+@Service
 public class AnafService {
 
     private final String ANAF_URL_API = "https://webservicesp.anaf.ro/api/PlatitorTvaRest/v9/tva";
     private final HttpClient client;
     private final Gson gson;
+
+    @Autowired
+    private FinancialDataRepository financialDataRepository;
 
     public AnafService() {
         this.client = HttpClient.newHttpClient();
@@ -47,12 +54,7 @@ public class AnafService {
     }
 
     public List<Financial_Data> fetchFinancialData(String cui) {
-        // TODO: Replace this with a real bilanț API call in the future
-        return List.of(
-                new Financial_Data(1, 2022, 1_200_000.0, 250_000.0, 3_100_000.0, null),
-                new Financial_Data(null, 2021, 1_000_000.0, 210_000.0, 2_900_000.0, null),
-                new Financial_Data(null, 2020,   800_000.0, 150_000.0, 2_500_000.0, null)
-        );
+        return financialDataRepository.findByCompany_Cui(cui);
     }
 
 }
